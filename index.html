@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT Forge — Project Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">IoT<strong>Forge</strong></span>
+    </div>
+    <nav class="nav">
+      <a href="#generator" class="nav-link active">Generator</a>
+      <a href="#ideas" class="nav-link">Quick Ideas</a>
+      <a href="#saved" class="nav-link">Saved</a>
+    </nav>
+    <div class="header-badge">AI-Powered</div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Next-Gen IoT Education Platform</div>
+    <h1 class="hero-title">
+      Build <span class="accent">Real</span><br>
+      IoT Projects<br>
+      <span class="outline-text">Instantly.</span>
+    </h1>
+    <p class="hero-sub">Describe any IoT idea. Get full schematics, code, components, and step-by-step instructions — powered by AI.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Projects</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">Categories</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Possibilities</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="circuit-ring ring-1"></div>
+    <div class="circuit-ring ring-2"></div>
+    <div class="circuit-ring ring-3"></div>
+    <div class="hero-icon-wrap">
+      <svg viewBox="0 0 120 120" class="hero-svg">
+        <circle cx="60" cy="60" r="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4" class="rotate-slow"/>
+        <rect x="45" y="45" width="30" height="30" rx="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <circle cx="60" cy="60" r="6" fill="var(--accent)"/>
+        <line x1="20" y1="60" x2="45" y2="60" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="75" y1="60" x2="100" y2="60" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="60" y1="20" x2="60" y2="45" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="60" y1="75" x2="60" y2="100" stroke="var(--accent)" stroke-width="1.5"/>
+        <circle cx="20" cy="60" r="4" fill="var(--accent-dim)"/>
+        <circle cx="100" cy="60" r="4" fill="var(--accent-dim)"/>
+        <circle cx="60" cy="20" r="4" fill="var(--accent-dim)"/>
+        <circle cx="60" cy="100" r="4" fill="var(--accent-dim)"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Generator Section -->
+<section class="section" id="generator">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">01 — Generator</span>
+      <h2 class="section-title">Generate Your Project</h2>
+    </div>
+
+    <div class="generator-layout">
+      <!-- Input Panel -->
+      <div class="input-panel">
+        <div class="input-card">
+          <div class="input-group">
+            <label class="label">Project Idea</label>
+            <textarea id="topicInput" class="textarea" placeholder="e.g. Smart plant watering system using soil moisture sensor and ESP32 that sends alerts to my phone..."></textarea>
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label class="label">Category</label>
+              <select id="categorySelect" class="select">
+                <option>Home Automation</option>
+                <option>Smart Agriculture</option>
+                <option>Industrial IoT</option>
+                <option>Healthcare & Wearables</option>
+                <option>Environmental Monitoring</option>
+                <option>Smart Energy</option>
+                <option>Security & Surveillance</option>
+                <option>Smart Cities</option>
+                <option>Robotics & Motion</option>
+                <option>Asset Tracking</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="label">Difficulty</label>
+              <div class="difficulty-btns" id="difficultyBtns">
+                <button class="diff-btn active" data-val="Beginner">Beginner</button>
+                <button class="diff-btn" data-val="Intermediate">Intermediate</button>
+                <button class="diff-btn" data-val="Advanced">Advanced</button>
+              </div>
+            </div>
+          </div>
+
+          <button id="generateBtn" class="btn-generate">
+            <span class="btn-text">Generate Project</span>
+            <span class="btn-icon">→</span>
+          </button>
+
+          <div class="quick-chips">
+            <span class="chips-label">Try:</span>
+            <button class="chip" onclick="setTopic('Smart door lock with face recognition and RFID')">Smart Door Lock</button>
+            <button class="chip" onclick="setTopic('Air quality monitoring station with MQ135 and NodeMCU')">Air Quality Monitor</button>
+            <button class="chip" onclick="setTopic('Automated greenhouse with temperature, humidity and lighting control')">Smart Greenhouse</button>
+            <button class="chip" onclick="setTopic('GPS vehicle tracker with real-time dashboard')">GPS Tracker</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="output-panel" id="outputPanel">
+        <div class="output-placeholder" id="outputPlaceholder">
+          <div class="placeholder-icon">🔌</div>
+          <p>Your IoT project blueprint will appear here</p>
+          <span>Complete with code, circuit diagrams, and steps</span>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState" style="display:none">
+          <div class="loader-ring"></div>
+          <div class="loader-msgs" id="loaderMsgs">
+            <p class="loader-msg active">Analyzing project requirements...</p>
+            <p class="loader-msg">Selecting optimal components...</p>
+            <p class="loader-msg">Writing circuit schematics...</p>
+            <p class="loader-msg">Generating working code...</p>
+            <p class="loader-msg">Compiling step-by-step guide...</p>
+          </div>
+        </div>
+
+        <!-- Project Result -->
+        <div id="projectResult" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Ideas Section -->
+<section class="section section-dark" id="ideas">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">02 — Inspiration</span>
+      <h2 class="section-title">Quick Ideas</h2>
+    </div>
+    <div class="ideas-controls">
+      <select id="ideasCategory" class="select select-sm">
+        <option>Home Automation</option>
+        <option>Smart Agriculture</option>
+        <option>Industrial IoT</option>
+        <option>Environmental Monitoring</option>
+        <option>Security & Surveillance</option>
+        <option>Smart Energy</option>
+      </select>
+      <select id="ideasDifficulty" class="select select-sm">
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+      <button id="ideasBtn" class="btn-secondary">
+        <span>Spark Ideas</span>
+        <span>✦</span>
+      </button>
+    </div>
+    <div id="ideasGrid" class="ideas-grid">
+      <div class="ideas-placeholder">Click "Spark Ideas" to get AI-generated IoT project suggestions</div>
+    </div>
+  </div>
+</section>
+
+<!-- Saved Section -->
+<section class="section" id="saved">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">03 — Library</span>
+      <h2 class="section-title">Saved Projects</h2>
+    </div>
+    <div id="savedGrid" class="saved-grid">
+      <div class="saved-placeholder">No saved projects yet. Generate and save your first project!</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="logo"><span class="logo-icon">⚡</span><span class="logo-text">IoT<strong>Forge</strong></span></div>
+    <p class="footer-text">AI-powered IoT project generation. Built for makers, engineers & students.</p>
+    <div class="footer-tech">Python · Flask · Anthropic Claude · Vanilla JS</div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
