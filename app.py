@@ -8,10 +8,22 @@ from pymongo import MongoClient
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
-# ✅ MongoDB Connection
-client = MongoClient(os.environ.get("MONGO_URI"))
-db = client["iot_db"]
-collection = db["projects"]
+# ✅ SAFE MongoDB Connection (FIXED)
+MONGO_URI = os.environ.get("MONGO_URI")
+
+client = None
+collection = None
+
+try:
+    if MONGO_URI:
+        client = MongoClient(MONGO_URI)
+        db = client["iot_db"]
+        collection = db["projects"]
+        print("✅ MongoDB connected")
+    else:
+        print("⚠️ MONGO_URI not found")
+except Exception as e:
+    print("❌ MongoDB connection error:", e)
 
 
 def _seeded_random(topic: str, difficulty: str, category: str):
@@ -25,11 +37,9 @@ def _format_title(topic: str, category: str):
     return f"Smart {topic.title()} System"
 
 
-# 🔥 KEEP THIS as fallback (important)
+# 🔥 Fallback generator
 def _build_project(topic: str, difficulty: str, category: str):
-    rng = _seeded_random(topic, difficulty, category)
-
-    project = {
+    return {
         "title": f"Smart {topic.title()} System",
         "tagline": f"A {difficulty.lower()} {category.lower()} project.",
         "overview": f"This project helps build a {topic.lower()} system.",
@@ -49,8 +59,6 @@ def _build_project(topic: str, difficulty: str, category: str):
         }
     }
 
-    return project
-
 
 @app.route('/')
 def index():
@@ -62,7 +70,7 @@ def test():
     return jsonify({'message': 'Backend is working'})
 
 
-# 🚀 ✅ UPDATED GENERATE API (MongoDB + fallback)
+# 🚀 GENERATE API (MongoDB + fallback)
 @app.route('/api/generate', methods=['POST'])
 def generate_project():
     data = request.get_json() or {}
@@ -74,17 +82,18 @@ def generate_project():
         return jsonify({'error': 'Topic is required'}), 400
 
     try:
-        # 🔥 Try MongoDB first
-        project = collection.find_one({
-            "category": category,
-            "difficulty": difficulty
-        })
+        # ✅ Check if DB available
+        if collection:
+            project = collection.find_one({
+                "category": category,
+                "difficulty": difficulty
+            })
 
-        if project:
-            project["_id"] = str(project["_id"])
-            return jsonify({'success': True, 'project': project})
+            if project:
+                project["_id"] = str(project["_id"])
+                return jsonify({'success': True, 'project': project})
 
-        # ⚠️ fallback if DB empty
+        # 🔥 fallback
         project_data = _build_project(topic, difficulty, category)
         return jsonify({'success': True, 'project': project_data})
 
@@ -92,7 +101,7 @@ def generate_project():
         return jsonify({'error': str(e)}), 500
 
 
-# 🚀 ✅ UPDATED IDEAS API
+# 🚀 IDEAS API
 @app.route('/api/quick-ideas', methods=['POST'])
 def quick_ideas():
     data = request.get_json() or {}
@@ -100,17 +109,18 @@ def quick_ideas():
     difficulty = data.get('difficulty', 'Beginner')
 
     try:
-        ideas = list(collection.find(
-            {"category": category, "difficulty": difficulty},
-            {"title": 1, "overview": 1}
-        ).limit(4))
+        if collection:
+            ideas = list(collection.find(
+                {"category": category, "difficulty": difficulty},
+                {"title": 1, "overview": 1}
+            ).limit(4))
 
-        if ideas:
-            for idea in ideas:
-                idea["_id"] = str(idea["_id"])
-            return jsonify({'success': True, 'ideas': ideas})
+            if ideas:
+                for idea in ideas:
+                    idea["_id"] = str(idea["_id"])
+                return jsonify({'success': True, 'ideas': ideas})
 
-        # fallback
+        # 🔥 fallback
         fallback = [
             {"title": "Smart Plant System", "description": "Auto watering system", "components": [], "wow_factor": "Cool IoT"}
         ]
@@ -120,14 +130,18 @@ def quick_ideas():
         return jsonify({'error': str(e)}), 500
 
 
-# 🚀 ✅ SAVE API (for persistence)
+# 🚀 SAVE API
 @app.route('/api/save', methods=['POST'])
 def save_project():
     data = request.get_json()
 
     try:
-        collection.insert_one(data)
-        return jsonify({'success': True})
+        if collection:
+            collection.insert_one(data)
+            return jsonify({'success': True})
+
+        return jsonify({'error': 'Database not connected'}), 500
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
