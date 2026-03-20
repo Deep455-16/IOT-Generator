@@ -1,13 +1,14 @@
-# Ignore Python virtual environment
+# Virtual environment
 .venv/
-
-# Ignore environment variables file
-.env
-
-# Python cache
+env/
 __pycache__/
-*.pyc
-*.pyo
 
-# Optional: VS Code settings
-.vscode/
+# System files
+.DS_Store
+*.pyc
+
+# Node files if any
+node_modules/
+
+# Sensitive files
+.env
