@@ -1,14 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Virtual environment
 .venv/
 env/
-__pycache__/
+venv/
 
-# System files
-.DS_Store
-*.pyc
-
-# Node files if any
-node_modules/
-
-# Sensitive files
+# Environment variables
 .env
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
