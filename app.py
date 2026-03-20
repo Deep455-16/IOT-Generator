@@ -15,6 +15,7 @@ CORS(app)
 # MongoDB Connection (Atlas) with forced TLS
 # =========================
 MONGO_URI = os.environ.get("MONGO_URI")  # e.g., mongodb+srv://user:pass@cluster0.vpferkw.mongodb.net/iot_db?retryWrites=true&w=majority
+
 client = None
 collection = None
 
@@ -95,7 +96,7 @@ def generate_project():
 
     try:
         # ✅ MongoDB first
-        if collection:
+        if collection is not None:
             project = collection.find_one({"category": category, "difficulty": difficulty})
             if project:
                 project["_id"] = str(project["_id"])
@@ -114,7 +115,7 @@ def quick_ideas():
     difficulty = data.get('difficulty', 'Beginner')
 
     try:
-        if collection:
+        if collection is not None:
             ideas = list(collection.find(
                 {"category": category, "difficulty": difficulty},
                 {"title": 1, "overview": 1}
@@ -136,7 +137,7 @@ def quick_ideas():
 def save_project():
     data = request.get_json()
     try:
-        if collection:
+        if collection is not None:
             collection.insert_one(data)
             return jsonify({'success': True})
         return jsonify({'error': 'Database not connected'}), 500
