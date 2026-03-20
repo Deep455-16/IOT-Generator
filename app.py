@@ -12,18 +12,23 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 # =========================
-# MongoDB Connection (Atlas)
+# MongoDB Connection (Atlas) with forced TLS
 # =========================
-MONGO_URI = os.environ.get("MONGO_URI")
+MONGO_URI = os.environ.get("MONGO_URI")  # e.g., mongodb+srv://user:pass@cluster0.vpferkw.mongodb.net/iot_db?retryWrites=true&w=majority
 client = None
 collection = None
 
 try:
     if MONGO_URI:
-        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        client = MongoClient(
+            MONGO_URI,
+            serverSelectionTimeoutMS=5000,
+            tls=True,  # Force TLS
+            tlsAllowInvalidCertificates=False  # Atlas requires valid certs
+        )
         db = client["iot_db"]
         collection = db["projects"]
-        # Try a quick server info to test connection
+        # Quick test to ensure connection works
         client.server_info()
         print("✅ MongoDB connected successfully")
     else:
@@ -105,7 +110,6 @@ def generate_project():
         # 🔥 Fallback if DB empty
         project_data = _build_project(topic, difficulty, category)
         return jsonify({'success': True, 'project': project_data})
-
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -132,7 +136,6 @@ def quick_ideas():
             {"title": "Smart Plant System", "description": "Auto watering system", "components": [], "wow_factor": "Cool IoT"}
         ]
         return jsonify({'success': True, 'ideas': fallback})
-
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
