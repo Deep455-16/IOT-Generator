@@ -1,19 +1,18 @@
 # Python
-__pycache__/
 *.pyc
+__pycache__/
 *.pyo
 *.pyd
-
-# Virtual environment
+*.env
 .venv/
 env/
 venv/
+*.sqlite3
 
-# VS Code settings
+# Editor
 .vscode/
+.idea/
 
-# Environment files
-.env
-
-# Misc
+# OS
 .DS_Store
+Thumbs.db
