@@ -9,12 +9,11 @@ __pycache__/
 env/
 venv/
 
-# Environment variables
-.env
-
-# VS Code
+# VS Code settings
 .vscode/
 
-# OS files
+# Environment files
+.env
+
+# Misc
 .DS_Store
-Thumbs.db
