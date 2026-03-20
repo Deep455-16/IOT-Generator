@@ -2,7 +2,7 @@
    IoT FORGE — Frontend App Logic
    ============================================================ */
 
-const API_BASE = 'https://iot-generator.onrender.com';
+const API_BASE = 'https://iot-generator-1.onrender.com';
 let currentDifficulty = 'Beginner';
 let savedProjects = JSON.parse(localStorage.getItem('iotforge_saved') || '[]');
 
