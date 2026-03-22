@@ -5,7 +5,7 @@ import os
 import certifi
 from dotenv import load_dotenv
 
-# ─── Monkey-patch pymongo's SSL context factory ─────────────────────────────
+# ─── Monkey-patch pymongo's SSL context factory ───────────────────────────────
 # Python 3.14 ships OpenSSL 3.6+ which defaults to SECLEVEL=2. MongoDB Atlas
 # rejects the handshake at that level (TLSV1_ALERT_INTERNAL_ERROR).  We wrap
 # pymongo's internal get_ssl_context() so every SSLContext it creates gets
@@ -66,6 +66,58 @@ except Exception as e:
     traceback.print_exc()
 
 # =========================
+# ✅ CHANGED: Load projects.json as local fallback
+# Place projects.json in the same folder as app.py
+# =========================
+import json
+
+_JSON_PROJECTS = []
+_JSON_PATH = os.path.join(os.path.dirname(__file__), "projects.json")
+
+try:
+    with open(_JSON_PATH, "r") as _f:
+        _JSON_PROJECTS = json.load(_f)
+    print(f"✅ projects.json loaded ({len(_JSON_PROJECTS)} projects)")
+except Exception as _e:
+    print(f"⚠️  projects.json not found or invalid: {_e}")
+
+
+def _json_find_one(category: str, difficulty: str, topic: str = ""):
+    """
+    Return one project from the local JSON that matches category + difficulty.
+    If topic is provided, prefer a project whose title contains the topic keyword.
+    Falls back to any match on category + difficulty.
+    """
+    topic_lower = topic.lower()
+
+    # Try keyword match first
+    if topic_lower:
+        for p in _JSON_PROJECTS:
+            if (p.get("category") == category
+                    and p.get("difficulty") == difficulty
+                    and topic_lower in p.get("title", "").lower()):
+                return p
+
+    # Any match on category + difficulty
+    matches = [
+        p for p in _JSON_PROJECTS
+        if p.get("category") == category and p.get("difficulty") == difficulty
+    ]
+    return random.choice(matches) if matches else None
+
+
+def _json_find_ideas(category: str, difficulty: str, limit: int = 4):
+    """Return up to `limit` projects (title + overview only) from local JSON."""
+    matches = [
+        p for p in _JSON_PROJECTS
+        if p.get("category") == category and p.get("difficulty") == difficulty
+    ]
+    sample = random.sample(matches, min(limit, len(matches))) if matches else []
+    return [{"title": p.get("title", ""), "overview": p.get("overview", "")}
+            for p in sample]
+
+
+# =========================
 # Utility Functions
 # =========================
 def _seeded_random(topic: str, difficulty: str, category: str):
@@ -115,9 +167,9 @@ def test():
 @app.route('/api/generate', methods=['POST'])
 def generate_project():
     data = request.get_json() or {}
-    topic = data.get('topic', '').strip()
+    topic      = data.get('topic', '').strip()
     difficulty = data.get('difficulty', 'Beginner')
-    category = data.get('category', 'Home Automation')
+    category   = data.get('category', 'Home Automation')
 
     if not topic:
         return jsonify({'error': 'Topic is required'}), 400
@@ -125,25 +177,44 @@ def generate_project():
     try:
         # ✅ MongoDB first
         if collection is not None:
-            project = collection.find_one({"category": category, "difficulty": difficulty})
+            # ✅ CHANGED: search by title keyword + category + difficulty
+            query = {"category": category, "difficulty": difficulty}
+            if topic:
+                query["title"] = {"$regex": topic, "$options": "i"}
+
+            project = collection.find_one(query)
+
+            # ✅ CHANGED: if keyword match fails, fall back to any same category+difficulty
+            if not project:
+                project = collection.find_one(
+                    {"category": category, "difficulty": difficulty}
+                )
+
             if project:
                 project["_id"] = str(project["_id"])
                 return jsonify({'success': True, 'project': project})
 
-        # 🔥 Fallback if DB empty
+        # ✅ CHANGED: try projects.json before hard-coded fallback
+        json_project = _json_find_one(category, difficulty, topic)
+        if json_project:
+            return jsonify({'success': True, 'project': json_project})
+
+        # 🔥 Last resort hard-coded fallback
         project_data = _build_project(topic, difficulty, category)
         return jsonify({'success': True, 'project': project_data})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/quick-ideas', methods=['POST'])
 def quick_ideas():
-    data = request.get_json() or {}
-    category = data.get('category', 'Home Automation')
+    data       = request.get_json() or {}
+    category   = data.get('category', 'Home Automation')
     difficulty = data.get('difficulty', 'Beginner')
 
     try:
         if collection is not None:
+            # ✅ CHANGED: project fields now match projects.json schema (title + overview)
             ideas = list(collection.find(
                 {"category": category, "difficulty": difficulty},
                 {"title": 1, "overview": 1}
@@ -153,11 +224,18 @@ def quick_ideas():
                     idea["_id"] = str(idea["_id"])
                 return jsonify({'success': True, 'ideas': ideas})
 
-        # Fallback
+        # ✅ CHANGED: try projects.json before hard-coded fallback
+        json_ideas = _json_find_ideas(category, difficulty, limit=4)
+        if json_ideas:
+            return jsonify({'success': True, 'ideas': json_ideas})
+
+        # 🔥 Last resort hard-coded fallback
         fallback = [
-            {"title": "Smart Plant System", "description": "Auto watering system", "components": [], "wow_factor": "Cool IoT"}
+            {"title": "Smart Plant System", "description": "Auto watering system",
+             "components": [], "wow_factor": "Cool IoT"}
         ]
         return jsonify({'success': True, 'ideas': fallback})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
