@@ -6,11 +6,6 @@ import certifi
 from dotenv import load_dotenv
 
 # ─── Monkey-patch pymongo's SSL context factory ───────────────────────────────
-# Python 3.14 ships OpenSSL 3.6+ which defaults to SECLEVEL=2. MongoDB Atlas
-# rejects the handshake at that level (TLSV1_ALERT_INTERNAL_ERROR).  We wrap
-# pymongo's internal get_ssl_context() so every SSLContext it creates gets
-# SECLEVEL lowered to 1 before pymongo uses it.
-# This MUST run before importing MongoClient so the wrapped version is in place.
 import pymongo.ssl_support as _pymongo_ssl
 
 _orig_get_ssl_context = _pymongo_ssl.get_ssl_context
@@ -20,29 +15,47 @@ def _patched_get_ssl_context(*args, **kwargs):
     try:
         ctx.set_ciphers("DEFAULT:@SECLEVEL=1")
     except Exception:
-        pass  # Older OpenSSL without @SECLEVEL support; safe to ignore
+        pass
     return ctx
 
 _pymongo_ssl.get_ssl_context = _patched_get_ssl_context
-# Also patch the reference already imported in client_options
 import pymongo.client_options as _pymongo_co
 _pymongo_co.get_ssl_context = _patched_get_ssl_context
 # ─────────────────────────────────────────────────────────────────────────────
 
 from pymongo import MongoClient
 
-# Load environment variables from .env (for local testing)
 load_dotenv()
 
 app = Flask(__name__, static_folder='.', static_url_path='')
-CORS(app)
+
+# ✅ FIXED: Explicit CORS — allows all origins, all methods, all headers
+#    Simple CORS(app) sometimes fails on Render because it doesn't set
+#    the correct headers for preflight OPTIONS requests.
+CORS(app,
+     resources={r"/api/*": {"origins": "*"}},
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "OPTIONS"],
+     supports_credentials=False)
+
+# ✅ FIXED: Handle OPTIONS preflight requests explicitly
+#    Browsers send an OPTIONS request before POST — if this isn't handled,
+#    the actual POST never gets made and fetch() throws a network error.
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        res = app.make_default_options_response()
+        res.headers["Access-Control-Allow-Origin"]  = "*"
+        res.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        res.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        return res
 
 # =========================
 # MongoDB Connection (Atlas)
 # =========================
 MONGO_URI = os.environ.get("MONGO_URI")
 
-client = None
+client     = None
 collection = None
 
 try:
@@ -53,9 +66,8 @@ try:
             tls=True,
             tlsCAFile=certifi.where(),
         )
-        db = client["iot_db"]
+        db         = client["iot_db"]
         collection = db["projects"]
-        # Quick test to ensure connection works
         client.server_info()
         print("✅ MongoDB connected successfully")
     else:
@@ -66,13 +78,12 @@ except Exception as e:
     traceback.print_exc()
 
 # =========================
-# ✅ CHANGED: Load projects.json as local fallback
-# Place projects.json in the same folder as app.py
+# Load projects.json as local fallback
 # =========================
 import json
 
 _JSON_PROJECTS = []
-_JSON_PATH = os.path.join(os.path.dirname(__file__), "projects.json")
+_JSON_PATH     = os.path.join(os.path.dirname(__file__), "projects.json")
 
 try:
     with open(_JSON_PATH, "r") as _f:
@@ -83,22 +94,13 @@ except Exception as _e:
 
 
 def _json_find_one(category: str, difficulty: str, topic: str = ""):
-    """
-    Return one project from the local JSON that matches category + difficulty.
-    If topic is provided, prefer a project whose title contains the topic keyword.
-    Falls back to any match on category + difficulty.
-    """
     topic_lower = topic.lower()
-
-    # Try keyword match first
     if topic_lower:
         for p in _JSON_PROJECTS:
             if (p.get("category") == category
                     and p.get("difficulty") == difficulty
                     and topic_lower in p.get("title", "").lower()):
                 return p
-
-    # Any match on category + difficulty
     matches = [
         p for p in _JSON_PROJECTS
         if p.get("category") == category and p.get("difficulty") == difficulty
@@ -107,14 +109,22 @@ def _json_find_one(category: str, difficulty: str, topic: str = ""):
 
 
 def _json_find_ideas(category: str, difficulty: str, limit: int = 4):
-    """Return up to `limit` projects (title + overview only) from local JSON."""
     matches = [
         p for p in _JSON_PROJECTS
         if p.get("category") == category and p.get("difficulty") == difficulty
     ]
     sample = random.sample(matches, min(limit, len(matches))) if matches else []
-    return [{"title": p.get("title", ""), "overview": p.get("overview", "")}
-            for p in sample]
+    return [
+        {
+            "title":       p.get("title", ""),
+            "overview":    p.get("overview", ""),
+            "description": p.get("description", p.get("overview", ""))[:120] + "...",
+            "wow_factor":  p.get("wow_factor", "Cool IoT project!"),
+            "components":  [c.get("name", c) if isinstance(c, dict) else c
+                            for c in p.get("components", [])[:3]],
+        }
+        for p in sample
+    ]
 
 
 # =========================
@@ -130,28 +140,55 @@ def _format_title(topic: str, category: str):
     return f"Smart {topic.title()} System"
 
 def _build_project(topic: str, difficulty: str, category: str):
-    """Fallback generator if MongoDB data not available"""
-    rng = _seeded_random(topic, difficulty, category)
+    """Last-resort fallback if both MongoDB and projects.json fail"""
     project = {
-        "title": _format_title(topic, category),
-        "tagline": f"A {difficulty.lower()} {category.lower()} project.",
-        "overview": f"This project helps build a {topic.lower()} system.",
-        "difficulty": difficulty,
-        "category": category,
+        "title":          _format_title(topic, category),
+        "tagline":        f"A {difficulty.lower()} {category.lower()} project.",
+        "overview":       f"This project helps build a {topic.lower()} system.",
+        "difficulty":     difficulty,
+        "category":       category,
         "estimated_time": "3-5 hours",
-        "estimated_cost": "$30–$60",
+        "estimated_cost": "$30 - $60",
+        "cost_range":     "$30 - $60",
+        "time_estimate":  "3-5 hours",
+        "cost":           "$30 - $60",
         "components": [
-            {"name": "ESP32", "quantity": 1, "purpose": "Controller", "approximate_cost": "$8"},
-            {"name": "Sensor", "quantity": 1, "purpose": "Input", "approximate_cost": "$5"}
+            {"name": "ESP32",  "quantity": 1, "purpose": "Main controller",  "approximate_cost": "$8"},
+            {"name": "Sensor", "quantity": 1, "purpose": "Data input",       "approximate_cost": "$5"},
+            {"name": "Relay",  "quantity": 1, "purpose": "Actuator control", "approximate_cost": "$3"},
         ],
-        "steps": [],
+        "architecture": {
+            "layers": [
+                {"name": "Perception Layer",  "description": "Sensors collect real-world data"},
+                {"name": "Network Layer",     "description": "Wi-Fi transmits data to broker"},
+                {"name": "Application Layer", "description": "Dashboard visualises data"},
+            ]
+        },
+        "steps": [
+            {"step_number": 1, "title": "Gather Components", "description": "Purchase all hardware components.", "duration": "", "code_snippet": "", "tips": []},
+            {"step_number": 2, "title": "Circuit Assembly",  "description": "Connect components on breadboard.", "duration": "", "code_snippet": "", "tips": []},
+            {"step_number": 3, "title": "Upload Firmware",   "description": "Flash the microcontroller code.",   "duration": "", "code_snippet": "", "tips": []},
+            {"step_number": 4, "title": "Test & Deploy",     "description": "Verify readings and go live.",      "duration": "", "code_snippet": "", "tips": []},
+        ],
         "code": {
-            "language": "Python",
-            "main_code": "# Sample Code",
-            "explanation": "Basic template"
-        }
+            "language":    "Python",
+            "main_code":   "# Sample Code\nprint('IoT project running')",
+            "explanation": "Basic template code for the project."
+        },
+        "testing": {
+            "steps":           ["Power on and verify sensor readings", "Check MQTT messages in broker"],
+            "expected_output": "Sensor returns stable readings. MQTT publishes data every 5 seconds."
+        },
+        "troubleshooting": [
+            {"problem": "Sensor reads 0",       "solution": "Check wiring and power supply"},
+            {"problem": "Wi-Fi not connecting", "solution": "Verify SSID and password in code"},
+        ],
+        "extensions":  ["Add mobile app", "Integrate with cloud dashboard"],
+        "description": f"A {difficulty.lower()} IoT project: {topic}",
+        "wow_factor":  "Build real IoT skills with hands-on hardware!",
     }
     return project
+
 
 # =========================
 # Routes
@@ -160,13 +197,20 @@ def _build_project(topic: str, difficulty: str, category: str):
 def index():
     return send_from_directory('.', 'index.html')
 
+
 @app.route('/api/test', methods=['GET'])
 def test():
-    return jsonify({'message': 'Backend is working'})
+    return jsonify({
+        'message':       'Backend is working',
+        'mongodb':       collection is not None,
+        'json_projects': len(_JSON_PROJECTS),
+        'port':          os.environ.get("PORT", "5000 (local default)"),
+    })
+
 
 @app.route('/api/generate', methods=['POST'])
 def generate_project():
-    data = request.get_json() or {}
+    data       = request.get_json() or {}
     topic      = data.get('topic', '').strip()
     difficulty = data.get('difficulty', 'Beginner')
     category   = data.get('category', 'Home Automation')
@@ -175,36 +219,44 @@ def generate_project():
         return jsonify({'error': 'Topic is required'}), 400
 
     try:
-        # ✅ MongoDB first
+        # ── MongoDB first ──────────────────────────────────────────────────
         if collection is not None:
-            # ✅ CHANGED: search by title keyword + category + difficulty
-            query = {"category": category, "difficulty": difficulty}
-            if topic:
-                query["title"] = {"$regex": topic, "$options": "i"}
+            # Use $sample so a different project is returned each time
+            pipeline = [
+                {"$match": {
+                    "category":   category,
+                    "difficulty": difficulty,
+                    "title":      {"$regex": topic, "$options": "i"}
+                }},
+                {"$sample": {"size": 1}}
+            ]
+            result = list(collection.aggregate(pipeline))
 
-            project = collection.find_one(query)
+            # Fallback: any project with same category + difficulty
+            if not result:
+                pipeline = [
+                    {"$match": {"category": category, "difficulty": difficulty}},
+                    {"$sample": {"size": 1}}
+                ]
+                result = list(collection.aggregate(pipeline))
 
-            # ✅ CHANGED: if keyword match fails, fall back to any same category+difficulty
-            if not project:
-                project = collection.find_one(
-                    {"category": category, "difficulty": difficulty}
-                )
-
-            if project:
+            if result:
+                project        = result[0]
                 project["_id"] = str(project["_id"])
                 return jsonify({'success': True, 'project': project})
 
-        # ✅ CHANGED: try projects.json before hard-coded fallback
+        # ── projects.json fallback ─────────────────────────────────────────
         json_project = _json_find_one(category, difficulty, topic)
         if json_project:
             return jsonify({'success': True, 'project': json_project})
 
-        # 🔥 Last resort hard-coded fallback
-        project_data = _build_project(topic, difficulty, category)
-        return jsonify({'success': True, 'project': project_data})
+        # ── Last resort ────────────────────────────────────────────────────
+        return jsonify({'success': True,
+                        'project': _build_project(topic, difficulty, category)})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/quick-ideas', methods=['POST'])
 def quick_ideas():
@@ -214,30 +266,49 @@ def quick_ideas():
 
     try:
         if collection is not None:
-            # ✅ CHANGED: project fields now match projects.json schema (title + overview)
-            ideas = list(collection.find(
-                {"category": category, "difficulty": difficulty},
-                {"title": 1, "overview": 1}
-            ).limit(4))
+            # Use $sample for variety + return all fields quick-ideas needs
+            pipeline = [
+                {"$match": {"category": category, "difficulty": difficulty}},
+                {"$sample": {"size": 4}},
+                {"$project": {
+                    "title":       1,
+                    "overview":    1,
+                    "description": 1,
+                    "wow_factor":  1,
+                    "components":  1,
+                }}
+            ]
+            ideas = list(collection.aggregate(pipeline))
             if ideas:
                 for idea in ideas:
                     idea["_id"] = str(idea["_id"])
+                    if not idea.get("description"):
+                        idea["description"] = idea.get("overview", "")[:120] + "..."
+                    if not idea.get("wow_factor"):
+                        idea["wow_factor"] = "Cool IoT project!"
+                    raw = idea.get("components", [])
+                    idea["components"] = [
+                        c.get("name", c) if isinstance(c, dict) else c
+                        for c in raw[:3]
+                    ]
                 return jsonify({'success': True, 'ideas': ideas})
 
-        # ✅ CHANGED: try projects.json before hard-coded fallback
+        # ── projects.json fallback ─────────────────────────────────────────
         json_ideas = _json_find_ideas(category, difficulty, limit=4)
         if json_ideas:
             return jsonify({'success': True, 'ideas': json_ideas})
 
-        # 🔥 Last resort hard-coded fallback
-        fallback = [
-            {"title": "Smart Plant System", "description": "Auto watering system",
-             "components": [], "wow_factor": "Cool IoT"}
-        ]
-        return jsonify({'success': True, 'ideas': fallback})
+        # ── Last resort ────────────────────────────────────────────────────
+        return jsonify({'success': True, 'ideas': [{
+            "title":       "Smart Plant Watering System",
+            "description": "Auto-water your plants based on soil moisture",
+            "components":  ["ESP32", "Soil Sensor", "Water Pump"],
+            "wow_factor":  "Never let a plant die again!"
+        }]})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/save', methods=['POST'])
 def save_project():
@@ -250,9 +321,14 @@ def save_project():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 # =========================
 # Run server
 # =========================
 if __name__ == '__main__':
+    # Render sets PORT env var to 10000 automatically.
+    # Locally it falls back to 5000.
+    # Both cases handled by this single line.
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    print(f"🚀 Starting Flask on port {port}")
+    app.run(host='0.0.0.0', port=port, debug=False)
