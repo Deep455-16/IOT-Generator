@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>IOTech | Industrial IoT Project Generator</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            industrial: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            accent: {
+              light: '#3b82f6', // blue-500
+              dark: '#60a5fa',  // blue-400
+              warning: '#f59e0b', // amber-500
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'industrial': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+            'industrial-inset': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.2)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-industrial-50 text-industrial-900 dark:bg-industrial-950 dark:text-industrial-100 min-h-screen flex flex-col transition-colors duration-300">
+  
+  <!-- Navigation -->
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-industrial-900/80 backdrop-blur-md border-b border-industrial-200 dark:border-industrial-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-10 h-10 bg-accent-light dark:bg-accent-dark rounded-md flex items-center justify-center text-white dark:text-industrial-950 shadow-industrial">
+            <span class="material-symbols-outlined font-bold">precision_manufacturing</span>
+          </div>
+          <span class="text-2xl font-bold tracking-tight text-industrial-900 dark:text-white">IOTech</span>
+        </div>
+        
+        <nav class="hidden md:flex gap-8">
+          <a href="/" class="text-accent-light dark:text-accent-dark font-semibold border-b-2 border-accent-light dark:border-accent-dark py-5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">home</span> Home
+          </a>
+          <a href="/generator" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">terminal</span> Generator
+          </a>
+          <a href="/ideas" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">lightbulb</span> Ideas
+          </a>
+          <a href="/saved" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">folder</span> Library
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <button id="themeToggle" class="p-2 rounded-md bg-industrial-100 dark:bg-industrial-800 text-industrial-600 dark:text-industrial-300 hover:bg-industrial-200 dark:hover:bg-industrial-700 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-light" aria-label="Toggle Theme">
+            <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+          </button>
+          
+          <!-- Mobile Menu Button -->
+          <button id="mobileMenuBtn" class="md:hidden p-2 text-industrial-600 dark:text-industrial-300">
+             <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="hidden md:hidden bg-white dark:bg-industrial-900 border-b border-industrial-200 dark:border-industrial-800">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <a href="/" class="bg-industrial-100 dark:bg-industrial-800 text-accent-light dark:text-accent-dark block px-3 py-2 rounded-md font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">home</span> Home
+        </a>
+        <a href="/generator" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">terminal</span> Generator
+        </a>
+        <a href="/ideas" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">lightbulb</span> Ideas
+        </a>
+        <a href="/saved" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">folder</span> Library
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="relative bg-industrial-100 dark:bg-industrial-900 py-20 overflow-hidden">
+      <!-- Grid Background Pattern -->
+      <div class="absolute inset-0 z-0 opacity-20 dark:opacity-10" style="background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px); background-size: 30px 30px; --grid-color: #64748b;"></div>
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-12">
+        <div class="md:w-1/2 text-center md:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-light/10 dark:bg-accent-dark/10 border border-accent-light/20 dark:border-accent-dark/20 text-accent-light dark:text-accent-dark text-xs font-mono font-bold uppercase tracking-wider mb-6">
+            <span class="w-2 h-2 rounded-full bg-accent-warning animate-pulse"></span>
+            System Online
+          </div>
+          <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-industrial-900 dark:text-white mb-6 leading-tight">
+            Design <span class="text-accent-light dark:text-accent-dark">Industrial</span> IoT Projects Instantly.
+          </h1>
+          <p class="text-lg text-industrial-600 dark:text-industrial-300 mb-8 max-w-2xl mx-auto md:mx-0">
+            Automate the blueprinting phase. Leverage AI to generate full schematics, BOM, and embedded code for your next hardware deployment.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <a href="/generator" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-md text-white bg-accent-light hover:bg-blue-600 dark:bg-accent-dark dark:text-industrial-950 dark:hover:bg-blue-300 shadow-industrial transition-all">
+              <span class="material-symbols-outlined mr-2">precision_manufacturing</span>
+              Start Generator
+            </a>
+            <a href="/ideas" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-md text-industrial-700 bg-white border border-industrial-300 hover:bg-industrial-50 dark:text-industrial-200 dark:bg-industrial-800 dark:border-industrial-700 dark:hover:bg-industrial-700 shadow-sm transition-all">
+              <span class="material-symbols-outlined mr-2">lightbulb</span>
+              View Ideas
+            </a>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2">
+          <!-- Industrial UI Mockup -->
+          <div class="bg-white dark:bg-industrial-800 rounded-lg shadow-2xl border border-industrial-200 dark:border-industrial-700 overflow-hidden transform md:rotate-y-12 md:rotate-x-12 perspective-1000">
+            <div class="bg-industrial-100 dark:bg-industrial-900 px-4 py-2 flex items-center justify-between border-b border-industrial-200 dark:border-industrial-700">
+               <div class="flex gap-2">
+                 <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                 <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                 <div class="w-3 h-3 rounded-full bg-green-500"></div>
+               </div>
+               <div class="text-xs font-mono text-industrial-500">SYS_CONSOLE_V2.1</div>
+            </div>
+            <div class="p-6 font-mono text-sm text-industrial-600 dark:text-industrial-400 bg-industrial-50 dark:bg-industrial-950">
+              <div class="text-accent-light dark:text-accent-dark mb-2">> INITIALIZING IOTECH CORE...</div>
+              <div class="mb-2">> CONNECTING TO KNOWLEDGE BASE... <span class="text-green-500">SUCCESS</span></div>
+              <div class="mb-2">> LOADING SCHEMATIC ENGINE... <span class="text-green-500">SUCCESS</span></div>
+              <div class="mb-4">> READY FOR INPUT.</div>
+              <div class="border-l-2 border-accent-warning pl-4 italic text-industrial-500">
+                Awaiting project parameters...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-12 bg-white dark:bg-industrial-950 border-t border-b border-industrial-200 dark:border-industrial-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-4xl font-extrabold text-accent-light dark:text-accent-dark mb-2">10+</div>
+            <div class="text-sm font-mono text-industrial-500 uppercase tracking-wide">Domains</div>
+          </div>
+          <div>
+            <div class="text-4xl font-extrabold text-accent-light dark:text-accent-dark mb-2">500+</div>
+            <div class="text-sm font-mono text-industrial-500 uppercase tracking-wide">Blueprints</div>
+          </div>
+          <div>
+            <div class="text-4xl font-extrabold text-accent-light dark:text-accent-dark mb-2">AI</div>
+            <div class="text-sm font-mono text-industrial-500 uppercase tracking-wide">Powered</div>
+          </div>
+          <div>
+            <div class="text-4xl font-extrabold text-accent-light dark:text-accent-dark mb-2">24/7</div>
+            <div class="text-sm font-mono text-industrial-500 uppercase tracking-wide">Availability</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-industrial-100 dark:bg-industrial-900 py-8 border-t border-industrial-200 dark:border-industrial-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 bg-accent-light dark:bg-accent-dark rounded flex items-center justify-center text-white dark:text-industrial-950">
+          <span class="material-symbols-outlined text-sm font-bold">precision_manufacturing</span>
+        </div>
+        <span class="font-bold text-industrial-900 dark:text-white">IOTech</span>
+      </div>
+      <div class="text-sm text-industrial-500 font-mono">
+        &copy; 2026 IOTech Platform. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

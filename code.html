@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>KINETIC_IOT | AI-Powered Project Generation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#2e3134",
+                        "surface-container-low": "#191c1f",
+                        "surface": "#111417",
+                        "on-primary-fixed": "#002022",
+                        "outline-variant": "#3a494b",
+                        "on-primary": "#00363a",
+                        "tertiary-container": "#cddcf3",
+                        "surface-container-highest": "#323539",
+                        "primary": "#e1fdff",
+                        "surface-dim": "#111417",
+                        "outline": "#849495",
+                        "surface-bright": "#37393d",
+                        "on-error": "#690005",
+                        "inverse-primary": "#00696f",
+                        "tertiary": "#f5f7ff",
+                        "surface-container-high": "#282a2e",
+                        "error": "#ffb4ab",
+                        "primary-container": "#00f2ff",
+                        "on-secondary": "#3c0091",
+                        "on-tertiary-container": "#526174",
+                        "on-surface-variant": "#b9cacb",
+                        "secondary": "#d0bcff",
+                        "on-surface": "#e1e2e7",
+                        "on-secondary-container": "#c4abff",
+                        "error-container": "#93000a",
+                        "on-primary-container": "#006a71",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#74f5ff",
+                        "on-background": "#e1e2e7",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "surface-container": "#1d2023",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-tertiary": "#233143",
+                        "secondary-fixed": "#e9ddff",
+                        "on-secondary-fixed": "#23005c",
+                        "inverse-surface": "#e1e2e7",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "on-primary-fixed-variant": "#004f54",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-variant": "#323539",
+                        "surface-container-lowest": "#0c0e12",
+                        "background": "#111417",
+                        "secondary-container": "#571bc1",
+                        "primary-fixed-dim": "#00dbe7",
+                        "surface-tint": "#00dbe7",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "on-secondary-fixed-variant": "#5516be"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+    html {
+      scroll-behavior: smooth;
+    }
+        body {
+            background-color: #111417;
+            color: #e1e2e7;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(225, 253, 255, 0.05) 0%, rgba(208, 188, 255, 0.02) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(225, 253, 255, 0.15);
+        }
+
+        .glow-border:hover {
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .terminal-glow {
+            box-shadow: inset 0 0 40px rgba(0, 242, 255, 0.05);
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+
+        .floating-3d {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotateX(0deg) rotateY(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotateX(5deg) rotateY(5deg);
+            }
+        }
+
+        .depth-shadow {
+            filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.5));
+        }
+
+        .hologram-grid {
+            background-image: linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: rotateX(60deg) translateY(-100px);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <!-- TopNavBar Shell -->
+    <header
+        class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-b border-cyan-400/15 shadow-[0_8px_32_0_rgba(0,0,0,0.8)]">
+        <nav class="flex justify-between items-center px-8 h-20 w-full font-['Space_Grotesk'] tracking-tight">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-primary-container rounded flex items-center justify-center text-on-primary-container">
+                    <span class="material-symbols-outlined text-lg"
+                        data-icon="settings_input_component">settings_input_component</span>
+                </div>
+                <div
+                    class="text-2xl font-bold tracking-tighter text-cyan-400 drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]">
+                    IoTForge
+                </div>
+            </div>
+            <div class="hidden md:flex gap-8 items-center">
+                <a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 flex items-center gap-1" href="#generator">
+                    <span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+                    Generator
+                </a>
+                <a class="text-slate-400 hover:text-cyan-200 transition-colors flex items-center gap-1" href="#ideas">
+                    <span class="material-symbols-outlined text-sm" data-icon="lightbulb">lightbulb</span>
+                    Ideas
+                </a>
+                <a class="text-slate-400 hover:text-cyan-200 transition-colors flex items-center gap-1" href="#saved">
+                    <span class="material-symbols-outlined text-sm" data-icon="folder">folder</span>
+                    Saved
+                </a>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div
+                    class="flex items-center gap-1.5 px-3 py-1 bg-primary-container/10 border border-primary-container/20 rounded-full">
+                    <div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+                    <span class="text-[10px] font-mono tracking-widest text-primary-container">AI-POWERED</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="flex-grow pt-20">
+        <!-- Hero Section -->
+        <section class="relative min-h-[800px] flex items-center justify-center overflow-hidden px-8">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 z-0">
+                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container/10 rounded-full blur-[120px]">
+                </div>
+                <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
+            </div>
+            <div class="container mx-auto flex flex-col items-center text-center z-10 max-w-4xl">
+                <div
+                    class="inline-block px-4 py-1.5 rounded-full border border-primary-container/20 bg-primary-container/5 text-primary-container text-[10px] font-mono tracking-[0.2em] mb-8 uppercase">
+                    • Next-Gen IoT Platform
+                </div>
+                <h1 class="text-6xl md:text-8xl font-headline font-bold leading-none tracking-tighter mb-8">
+                    <span class="text-on-surface">Build</span>
+                    <span class="text-primary-container">Real</span> <br />
+                    <span class="text-on-surface">IoT Projects</span> <br />
+                    <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container/60 to-secondary/40 italic">Instantly.</span>
+                </h1>
+                <p class="text-on-surface-variant font-body text-xl max-w-2xl leading-relaxed mb-12">
+                    Describe any IoT idea. Get full schematics, code, components, and step-by-step instructions —
+                    powered by AI.
+                </p>
+                <div class="grid grid-cols-3 gap-6 w-full max-w-2xl mb-16">
+                    <div class="glass-panel p-6 rounded-2xl border border-primary/10">
+                        <div class="text-3xl font-bold text-primary-container mb-1">500+</div>
+                        <div class="text-[10px] font-mono tracking-widest text-on-surface-variant/60 uppercase">Projects
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-primary/10">
+                        <div class="text-3xl font-bold text-primary-container mb-1">10</div>
+                        <div class="text-[10px] font-mono tracking-widest text-on-surface-variant/60 uppercase">
+                            Categories</div>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-primary/10">
+                        <div class="text-3xl font-bold text-primary-container mb-1">∞</div>
+                        <div class="text-[10px] font-mono tracking-widest text-on-surface-variant/60 uppercase">
+                            Possibilities</div>
+                    </div>
+                </div>
+                <div class="animate-bounce">
+                    <span class="material-symbols-outlined text-primary-container/40"
+                        data-icon="keyboard_double_arrow_down">keyboard_double_arrow_down</span>
+                </div>
+            </div>
+        </section>
+        <!-- Generator Section -->
+        <section id="generator" class="py-24 px-8 bg-surface-container-lowest relative">
+            <div class="container mx-auto">
+                <div class="mb-12">
+                    <div class="text-primary-container/60 font-mono tracking-[0.3em] text-[10px] mb-4 uppercase">01 //
+                        Generator</div>
+                    <h2 class="text-5xl font-headline font-bold text-primary">Generate Your <span
+                            class="text-primary-container">Project</span></h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                    <!-- Inputs Panel -->
+                    <div class="glass-panel p-8 rounded-2xl flex flex-col gap-8 border border-primary/10">
+                        <div class="space-y-4">
+                            <label
+                                class="flex items-center gap-2 text-[10px] font-mono tracking-widest text-primary-container uppercase">
+                                <span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+                                Project Idea
+                            </label>
+                            <textarea
+                                class="w-full h-32 bg-surface-container-low border border-primary/10 p-6 font-mono text-sm text-on-surface focus:outline-none focus:border-primary-container/50 transition-all rounded-xl resize-none"
+                                placeholder="e.g. Smart plant watering system using soil moisture sensor and ESP32 that sends alerts to my phone..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <label
+                                    class="flex items-center gap-2 text-[10px] font-mono tracking-widest text-primary-container uppercase">
+                                    <span class="material-symbols-outlined text-sm" data-icon="folder">folder</span>
+                                    Category
+                                </label>
+                                <select
+                                    class="w-full bg-surface-container-low border border-primary/10 p-4 rounded-xl font-body text-sm text-on-surface focus:outline-none focus:border-primary-container/50">
+                                    <option>Home Automation</option>
+                                    <option>Smart Agriculture</option>
+                                    <option>Industrial IoT</option>
+                                    <option>Healthcare & Wearables</option>
+                                    <option>Environmental Monitoring</option>
+                                    <option>Smart Energy</option>
+                                    <option>Security & Surveillance</option>
+                                    <option>Smart Cities</option>
+                                    <option>Robotics & Motion</option>
+                                    <option>Asset Tracking</option>
+                                </select>
+                            </div>
+                            <div class="space-y-4">
+                                <label
+                                    class="flex items-center gap-2 text-[10px] font-mono tracking-widest text-primary-container uppercase">
+                                    <span class="material-symbols-outlined text-sm" data-icon="cloud">cloud</span>
+                                    Difficulty
+                                </label>
+                                <div class="flex gap-2">
+                                    <button
+                                        class="flex-1 py-3 px-2 rounded-lg bg-primary-container/20 border border-primary-container text-[10px] font-bold text-primary-container tracking-tighter">Beginner</button>
+                                    <button
+                                        class="flex-1 py-3 px-2 rounded-lg bg-surface-container-low border border-primary/10 text-[10px] font-bold text-on-surface-variant/60 tracking-tighter hover:border-primary/30">Intermediate</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full py-5 rounded-xl bg-gradient-to-r from-primary-container via-primary-container to-secondary font-headline font-bold text-on-primary-container tracking-widest flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(0,242,255,0.3)] transition-all">
+                            <span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+                            Generate Project
+                            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+                        </button>
+                        <div class="flex flex-wrap gap-2 items-center text-[10px]">
+                            <span class="text-on-surface-variant/40 font-mono flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]"
+                                    data-icon="auto_awesome">auto_awesome</span>
+                                Try:
+                            </span>
+                            <button
+                                class="px-3 py-1.5 rounded-full border border-primary/10 bg-surface-container-low text-on-surface-variant hover:border-primary-container transition-all">Wi-Fi
+                                Smart Plug</button>
+                            <button
+                                class="px-3 py-1.5 rounded-full border border-primary/10 bg-surface-container-low text-on-surface-variant hover:border-primary-container transition-all">Smart
+                                Night Light</button>
+                            <button
+                                class="px-3 py-1.5 rounded-full border border-primary/10 bg-surface-container-low text-on-surface-variant hover:border-primary-container transition-all">Auto
+                                Blinds</button>
+                            <button
+                                class="px-3 py-1.5 rounded-full border border-primary/10 bg-surface-container-low text-on-surface-variant hover:border-primary-container transition-all">Fog
+                                Detector</button>
+                        </div>
+                    </div>
+                    <!-- AI Terminal -->
+                    <div
+                        class="bg-surface-container-lowest rounded-2xl border border-primary/15 overflow-hidden flex flex-col terminal-glow relative">
+                        <div class="absolute inset-0 opacity-10 pointer-events-none"
+                            style="background-image: linear-gradient(#00f2ff 1px, transparent 1px), linear-gradient(90deg, #00f2ff 1px, transparent 1px); background-size: 20px 20px;">
+                        </div>
+                        <div class="flex flex-col items-center justify-center h-full p-12 text-center relative z-10">
+                            <div
+                                class="w-20 h-20 rounded-full bg-primary-container/10 border border-primary-container/20 flex items-center justify-center mb-6 animate-pulse">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-primary-container/20 border border-primary-container/40">
+                                </div>
+                            </div>
+                            <h3 class="font-headline font-bold text-2xl text-primary mb-4">AI Blueprint Terminal</h3>
+                            <p class="text-on-surface-variant/60 max-w-xs text-sm font-body">
+                                Describe your IoT idea to generate a complete project with code, circuits &amp;
+                                step-by-step instructions
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Inspiration Section -->
+        <section id="ideas" class="py-24 px-8 bg-surface">
+            <div class="container mx-auto">
+                <div class="mb-12">
+                    <div class="text-primary-container/60 font-mono tracking-[0.3em] text-[10px] mb-4 uppercase">02 //
+                        Inspiration</div>
+                    <h2 class="text-5xl font-headline font-bold text-primary">Quick <span
+                            class="text-primary-container">Ideas</span></h2>
+                </div>
+                <div class="flex flex-wrap gap-4 mb-12">
+                    <select
+                        class="bg-surface-container border border-primary/10 px-6 py-3 rounded-xl font-body text-sm text-on-surface focus:outline-none min-w-[200px]">
+                        <option>Home Automation</option>
+                        <option>Smart Agriculture</option>
+                        <option>Industrial IoT</option>
+                        <option>Healthcare & Wearables</option>
+                        <option>Environmental Monitoring</option>
+                        <option>Smart Energy</option>
+                        <option>Security & Surveillance</option>
+                        <option>Smart Cities</option>
+                        <option>Robotics & Motion</option>
+                        <option>Asset Tracking</option>
+                    </select>
+                    <select
+                        class="bg-surface-container border border-primary/10 px-6 py-3 rounded-xl font-body text-sm text-on-surface focus:outline-none min-w-[200px]">
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Advanced</option>
+                    </select>
+                    <button
+                        class="bg-secondary/10 border border-secondary/20 text-secondary px-8 py-3 rounded-xl font-headline font-bold text-sm flex items-center gap-2 hover:bg-secondary/20 transition-all">
+                        <span class="material-symbols-outlined text-sm" data-icon="auto_awesome">auto_awesome</span>
+                        Refresh Ideas
+                    </button>
+                </div>
+                <!-- Idea Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Idea Card 1 -->
+                    <div
+                        class="glass-panel rounded-2xl border border-primary/10 overflow-hidden group hover:border-primary-container/30 transition-all cursor-pointer">
+                        <div class="h-48 relative overflow-hidden bg-slate-900">
+                            <img alt="Smart Hydroponics Monitor"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjnatICi-L6QKToC2YgnAmoMvOnwEloLU7yMmb8E_Mb-WiPhfb8RILC4rzYhT-KwLHPPZFjmBaOKGC-uMgEYOcmhIhqmv1ydmRFMk6tNRGJ1BrGySTSdU1bjkV-_QB5NtFEQwCH29xt-YGw0rVLnvIBkIftuoofF1GYPko1jEbK-mQ64N68vvrj66UdTdH8sej-D9u8Je11HediGmXq4qBTswQIxVAg7VIsJRRInSdEXzyPKOE3ef9ouTib0gq5YU7nR8WPek8SFFO" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+                            <div
+                                class="absolute top-4 right-4 bg-primary-container/20 backdrop-blur-md border border-primary-container/30 px-3 py-1 rounded-full">
+                                <span
+                                    class="text-[10px] font-mono text-primary-container uppercase font-bold tracking-widest">Agriculture</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="text-xl font-headline font-bold text-primary mb-2 group-hover:text-primary-container transition-colors">
+                                Smart Hydroponics Monitor</h3>
+                            <p class="text-on-surface-variant/60 text-sm font-body mb-4">IoT sensor suite for real-time
+                                pH, EC, and water temperature tracking with cloud logging.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-1 text-[10px] font-mono text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+                                    Beginner
+                                </span>
+                                <button
+                                    class="text-primary-container text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                                    View Details <span class="material-symbols-outlined text-sm"
+                                        data-icon="chevron_right">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Idea Card 2 -->
+                    <div
+                        class="glass-panel rounded-2xl border border-primary/10 overflow-hidden group hover:border-primary-container/30 transition-all cursor-pointer">
+                        <div class="h-48 relative overflow-hidden bg-slate-900">
+                            <img alt="Asset Tracking Tag"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdLYU7gJNdZjSMqQkQmij0boHPxvY4Ryao3HdKHP-tQ2Ss69H9sKIwnBON50pr9L8yGamaUppbybECV75W6PgXjt7-c7cxlW1TGjJIsmIBbSkBYj7pNaGehFsF5xcsD_pSvPBjd7d6JOjojqFS1gMcl8jzOgoHuvsQCAohPtWHL1iIdXeE4J-yTYOferv7y6QZmUgF1bI5Vj96ad10f84ubCFOXj2fwZZ1fk8OAwQ3xZZfpFZ_mKu6a_8Tlq_bYi1wKTLTT9ASVtpT" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+                            <div
+                                class="absolute top-4 right-4 bg-primary-container/20 backdrop-blur-md border border-primary-container/30 px-3 py-1 rounded-full">
+                                <span
+                                    class="text-[10px] font-mono text-primary-container uppercase font-bold tracking-widest">Industrial</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="text-xl font-headline font-bold text-primary mb-2 group-hover:text-primary-container transition-colors">
+                                NB-IoT Asset Tracker</h3>
+                            <p class="text-on-surface-variant/60 text-sm font-body mb-4">Low-power GPS tracker using
+                                LTE-M/NB-IoT for long-range logistics monitoring.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-1 text-[10px] font-mono text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+                                    Intermediate
+                                </span>
+                                <button
+                                    class="text-primary-container text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                                    View Details <span class="material-symbols-outlined text-sm"
+                                        data-icon="chevron_right">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Idea Card 3 -->
+                    <div
+                        class="glass-panel rounded-2xl border border-primary/10 overflow-hidden group hover:border-primary-container/30 transition-all cursor-pointer">
+                        <div class="h-48 relative overflow-hidden bg-slate-900">
+                            <img alt="Wearable Biometric Monitor"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS8mLmg0Yo85E6cbFnHcireO2mt_dGEb7u1v7lNTvVDObLGNQcxjEZFrjHMKUTpOLg0A97_s-A27luKyQTkHpRJeMMlUQKet7RXU_MhKQQF8KIWK0f8sx9i5Ste-Y9sKcf40VO0XVbgbjvR9DWwwarZX83P6CpT89DxJl7rK9G_7PN15B1ZtKISmWlUl0yi94sGdfGpaLTlytj-mjimFvTPy9PLPSbvAOTQ0a3pb0n4K5lvWpFQxPlxTc69-JN8PUkXrBxuClLLfe8" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+                            <div
+                                class="absolute top-4 right-4 bg-primary-container/20 backdrop-blur-md border border-primary-container/30 px-3 py-1 rounded-full">
+                                <span
+                                    class="text-[10px] font-mono text-primary-container uppercase font-bold tracking-widest">Healthcare</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="text-xl font-headline font-bold text-primary mb-2 group-hover:text-primary-container transition-colors">
+                                Wearable Health Patch</h3>
+                            <p class="text-on-surface-variant/60 text-sm font-body mb-4">A flexible wearable using BLE
+                                to transmit heart rate and skin temperature to a mobile app.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-1 text-[10px] font-mono text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+                                    Advanced
+                                </span>
+                                <button
+                                    class="text-primary-container text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                                    View Details <span class="material-symbols-outlined text-sm"
+                                        data-icon="chevron_right">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Saved Projects Section (Library) -->
+        <section id="saved" class="py-24 px-8 bg-surface-container-lowest relative overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute inset-0 opacity-[0.03]"
+                    style="background-image: radial-gradient(circle, #00f2ff 1px, transparent 1px); background-size: 50px 50px;">
+                </div>
+            </div>
+            <div class="container mx-auto relative z-10">
+                <div class="mb-12">
+                    <div class="text-primary-container/60 font-mono tracking-[0.3em] text-[10px] mb-4 uppercase">03 //
+                        Library</div>
+                    <h2 class="text-5xl font-headline font-bold text-primary">Saved <span
+                            class="text-primary-container">Projects</span></h2>
+                </div>
+                <!-- Saved Projects Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Saved Project 1 -->
+                    <div
+                        class="glass-panel rounded-2xl border border-primary/20 overflow-hidden group hover:shadow-[0_0_20px_rgba(0,242,255,0.1)] transition-all flex flex-col">
+                        <div class="h-40 relative bg-slate-900">
+                            <img alt="Solar Power Tracker" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPG_VS2VsQN98UWOawaq5gNa0GRE2faPhDWEt764N6jOCJOHWUC67Hv8YDV-O1o9fm_rX713puYCkVNrM43Z9HYrAuRhvU492j-Cog9SfRCjmhKpc4qAkFMtYTL_uZJwBC_vzC5Rt8qiy7FaNahh36zaEZAtvYfqNOxJXehQM5XKGfxm3MRTIJ_VEHe8iS2tGjIhFOOE3jSPRZ1yiaGcnBUv_8es6_dkMML_pYQPhZPundJeuEGm86EcbRKFHNBh4n0bLbOs_1fWvZ" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent">
+                            </div>
+                            <div class="absolute bottom-4 left-4 flex gap-2">
+                                <span
+                                    class="px-2 py-0.5 rounded bg-primary-container text-[8px] font-mono font-bold text-on-primary-container">ACTIVE</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow">
+                            <h3 class="text-lg font-headline font-bold text-primary mb-1">Dual-Axis Solar Tracker</h3>
+                            <p class="text-on-surface-variant/60 text-xs font-body mb-4">Arduino-based system that
+                                follows the sun to maximize PV efficiency.</p>
+                            <div
+                                class="flex items-center gap-4 text-[10px] font-mono text-on-surface-variant/40 border-t border-primary/10 pt-4">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs"
+                                        data-icon="calendar_today">calendar_today</span> Oct 12</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs"
+                                        data-icon="memory">memory</span> ESP32</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-primary/5 flex gap-2">
+                            <button
+                                class="flex-1 py-2 rounded-lg bg-primary-container/10 border border-primary-container/20 text-[10px] font-bold text-primary-container hover:bg-primary-container/20 transition-all uppercase tracking-widest">Open</button>
+                            <button
+                                class="px-3 py-2 rounded-lg bg-surface-container border border-primary/10 text-on-surface-variant hover:text-error transition-colors">
+                                <span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Saved Project 2 -->
+                    <div
+                        class="glass-panel rounded-2xl border border-primary/20 overflow-hidden group hover:shadow-[0_0_20px_rgba(0,242,255,0.1)] transition-all flex flex-col">
+                        <div class="h-40 relative bg-slate-900">
+                            <img alt="IoT Air Quality Station" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9gx5rA-ylZ0kHtoRjYNUDfr0HZ_1dy8R76LOXmT24fi_yhQq9cPadaHW6BSPkiEz-U0qfCJC2paAGpdk2S0PhdgJfKjr4v9kW8nGOoYggfJ8f8bT6WZJzlYddOptt4_XI3JeeOOjLwMMJjUvKGnLgwwlXzxpeBot7VdY7X-22OyQUJjcn3wYHvZVAsKyTgb2Oxye3O3d3HDuEFQFtcwOE542icf-QjwZ2QQ2A8FEpRJSmgyL0RvtdO_epSeeF_XDuWzHnPrZav8yF" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent">
+                            </div>
+                            <div class="absolute bottom-4 left-4 flex gap-2">
+                                <span
+                                    class="px-2 py-0.5 rounded bg-secondary text-[8px] font-mono font-bold text-on-secondary">DRAFT</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow">
+                            <h3 class="text-lg font-headline font-bold text-primary mb-1">City-Wide PM2.5 Monitor</h3>
+                            <p class="text-on-surface-variant/60 text-xs font-body mb-4">LoRaWAN node for monitoring
+                                urban air quality metrics with low power consumption.</p>
+                            <div
+                                class="flex items-center gap-4 text-[10px] font-mono text-on-surface-variant/40 border-t border-primary/10 pt-4">
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs"
+                                        data-icon="calendar_today">calendar_today</span> Oct 08</span>
+                                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs"
+                                        data-icon="sensors">sensors</span> SDS011</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-primary/5 flex gap-2">
+                            <button
+                                class="flex-1 py-2 rounded-lg bg-primary-container/10 border border-primary-container/20 text-[10px] font-bold text-primary-container hover:bg-primary-container/20 transition-all uppercase tracking-widest">Open</button>
+                            <button
+                                class="px-3 py-2 rounded-lg bg-surface-container border border-primary/10 text-on-surface-variant hover:text-error transition-colors">
+                                <span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- New Project Placeholder -->
+                    <div
+                        class="border-2 border-dashed border-primary/10 rounded-2xl flex flex-col items-center justify-center p-8 group hover:border-primary-container/40 transition-all cursor-pointer">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary-container/5 flex items-center justify-center mb-4 group-hover:bg-primary-container/10 transition-all">
+                            <span
+                                class="material-symbols-outlined text-3xl text-primary-container/30 group-hover:text-primary-container transition-all"
+                                data-icon="add">add</span>
+                        </div>
+                        <div
+                            class="text-sm font-headline font-bold text-primary/40 group-hover:text-primary transition-all">
+                            New Project</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer Shell -->
+    <footer class="w-full py-12 bg-slate-950 border-t border-cyan-400/10 mt-auto">
+        <div class="container mx-auto px-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-primary-container rounded flex items-center justify-center text-on-primary-container">
+                        <span class="material-symbols-outlined text-lg"
+                            data-icon="settings_input_component">settings_input_component</span>
+                    </div>
+                    <div class="text-2xl font-bold tracking-tighter text-cyan-400">IoTForge</div>
+                </div>
+                <div class="text-right">
+                    <p class="text-slate-400 text-sm mb-1">AI-powered IoT project generation.</p>
+                    <p class="text-slate-500 text-xs">Built for makers, engineers &amp; students.</p>
+                </div>
+            </div>
+            <div class="h-px w-full bg-slate-900 mb-8"></div>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-slate-600 text-[10px] font-mono tracking-widest uppercase">© 2026 IoT Forge</div>
+                <div class="flex gap-10">
+                    <a class="text-slate-500 hover:text-cyan-400 transition-colors text-[10px] font-mono tracking-widest uppercase"
+                        href="#generator">Generator</a>
+                    <a class="text-slate-500 hover:text-cyan-400 transition-colors text-[10px] font-mono tracking-widest uppercase"
+                        href="#ideas">Ideas</a>
+                    <a class="text-slate-500 hover:text-cyan-400 transition-colors text-[10px] font-mono tracking-widest uppercase"
+                        href="#saved">Saved</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

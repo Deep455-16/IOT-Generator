@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>IOTech | Ideas</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            industrial: {
+              50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617',
+            },
+            accent: { light: '#3b82f6', dark: '#60a5fa', warning: '#f59e0b', success: '#10b981' }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-industrial-50 text-industrial-900 dark:bg-industrial-950 dark:text-industrial-100 min-h-screen flex flex-col transition-colors duration-300">
+  
+  <!-- Navigation -->
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-industrial-900/80 backdrop-blur-md border-b border-industrial-200 dark:border-industrial-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-10 h-10 bg-accent-light dark:bg-accent-dark rounded-md flex items-center justify-center text-white dark:text-industrial-950">
+            <span class="material-symbols-outlined font-bold">precision_manufacturing</span>
+          </div>
+          <span class="text-2xl font-bold tracking-tight text-industrial-900 dark:text-white">IOTech</span>
+        </div>
+        
+        <nav class="hidden md:flex gap-8">
+          <a href="/" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">home</span> Home
+          </a>
+          <a href="/generator" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">terminal</span> Generator
+          </a>
+          <a href="/ideas" class="text-accent-light dark:text-accent-dark font-semibold border-b-2 border-accent-light dark:border-accent-dark py-5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">lightbulb</span> Ideas
+          </a>
+          <a href="/saved" class="text-industrial-500 dark:text-industrial-400 hover:text-industrial-900 dark:hover:text-white font-medium py-5 flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">folder</span> Library
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <button id="themeToggle" class="p-2 rounded-md bg-industrial-100 dark:bg-industrial-800 text-industrial-600 dark:text-industrial-300 hover:bg-industrial-200 dark:hover:bg-industrial-700 transition-colors focus:outline-none">
+            <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+          </button>
+          <button id="mobileMenuBtn" class="md:hidden p-2 text-industrial-600 dark:text-industrial-300">
+             <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="hidden md:hidden bg-white dark:bg-industrial-900 border-b border-industrial-200 dark:border-industrial-800">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <a href="/" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2"><span class="material-symbols-outlined text-sm">home</span> Home</a>
+        <a href="/generator" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2"><span class="material-symbols-outlined text-sm">terminal</span> Generator</a>
+        <a href="/ideas" class="bg-industrial-100 dark:bg-industrial-800 text-accent-light dark:text-accent-dark block px-3 py-2 rounded-md font-medium flex items-center gap-2"><span class="material-symbols-outlined text-sm">lightbulb</span> Ideas</a>
+        <a href="/saved" class="text-industrial-600 dark:text-industrial-300 hover:bg-industrial-100 dark:hover:bg-industrial-800 block px-3 py-2 rounded-md font-medium flex items-center gap-2"><span class="material-symbols-outlined text-sm">folder</span> Library</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow py-8" id="ideasPage">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-industrial-900 dark:text-white">Inspiration Database</h1>
+          <p class="text-industrial-500 dark:text-industrial-400 mt-1">Discover industry-standard IoT blueprints fetched from our backend.</p>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-3">
+          <select id="ideasCategory" class="bg-white dark:bg-industrial-800 border border-industrial-300 dark:border-industrial-700 rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-accent-light outline-none">
+            <option>Industrial IoT</option>
+            <option>Home Automation</option>
+            <option>Smart Agriculture</option>
+            <option>Healthcare & Wearables</option>
+            <option>Environmental Monitoring</option>
+            <option>Smart Energy</option>
+            <option>Asset Tracking</option>
+          </select>
+          <select id="ideasDifficulty" class="bg-white dark:bg-industrial-800 border border-industrial-300 dark:border-industrial-700 rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-accent-light outline-none">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+          <button id="ideasBtn" class="bg-industrial-200 hover:bg-industrial-300 dark:bg-industrial-700 dark:hover:bg-industrial-600 text-industrial-800 dark:text-industrial-100 px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors border border-industrial-300 dark:border-industrial-600">
+            <span class="material-symbols-outlined text-sm">refresh</span> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div id="ideasGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Ideas injected here via JS -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-industrial-100 dark:bg-industrial-900 py-8 border-t border-industrial-200 dark:border-industrial-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-industrial-500 font-mono">
+      &copy; 2026 IOTech Platform. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
