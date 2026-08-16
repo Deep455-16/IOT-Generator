@@ -230,7 +230,7 @@ function renderIdeas(ideas) {
         <span class="material-symbols-outlined text-[14px] align-middle">star</span> ${escapeHtml(idea.wow_factor)}
       </div>
       
-      <button onclick="window.location.href='/generator?topic=${encodeURIComponent(idea.title)}'" class="w-full bg-industrial-100 hover:bg-industrial-200 dark:bg-industrial-800 dark:hover:bg-industrial-700 text-industrial-800 dark:text-industrial-200 py-2 rounded-md text-sm font-bold flex items-center justify-center gap-1 transition-colors">
+      <button onclick="window.location.href='generator.html?topic=${encodeURIComponent(idea.title)}'" class="w-full bg-industrial-100 hover:bg-industrial-200 dark:bg-industrial-800 dark:hover:bg-industrial-700 text-industrial-800 dark:text-industrial-200 py-2 rounded-md text-sm font-bold flex items-center justify-center gap-1 transition-colors">
         <span class="material-symbols-outlined text-sm">precision_manufacturing</span> Generate Blueprint
       </button>
     </div>
